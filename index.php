@@ -3,9 +3,9 @@
 // Paramètres de connexion à la base de données
 $host = 'localhost';
 $port = '5432';
-$dbname = 'example_db';
-$user = 'example_user';
-$password = 'example_password';
+$dbname = 'dbname';
+$user = 'dbuser';
+$password = 'dbpwd';
 
 // Connexion à la base de données
 try {

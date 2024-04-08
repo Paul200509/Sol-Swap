@@ -123,7 +123,7 @@ function isAuthenticated(req, res, next) {
     res.redirect('/login');
 }
 router.get('/register', (req, res) => {
-    res.render('register'); // Assuming you have a view engine set up to render your registration form
+    res.render('register');
 });
 router.post('/register', async (req, res) => {
     const { username, password } = req.body;
@@ -131,8 +131,8 @@ router.post('/register', async (req, res) => {
 
     try {
         const newUser = await pool.query(
-            'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *',
-            [username, hashedPassword]
+            'INSERT INTO client (identifiant, mdp_client, date_inscription) VALUES ($1, $2, $3) RETURNING *',
+            [username, hashedPassword, new Date()]
         );
         res.status(201).send('User registered successfully');
     } catch (error) {
@@ -149,7 +149,7 @@ router.post('/login', async (req, res) => {
 
     try {
         const user = await pool.query(
-            'SELECT * FROM users WHERE username = $1',
+            'SELECT * FROM client WHERE identifiant = $1',
             [username]
         );
 
@@ -157,7 +157,7 @@ router.post('/login', async (req, res) => {
             return res.status(401).send('Invalid username or password');
         }
 
-        const isValidPassword = await bcrypt.compare(password, user.rows[0].password);
+        const isValidPassword = await bcrypt.compare(password, user.rows[0].mdp_client);
 
         if (!isValidPassword) {
             return res.status(401).send('Invalid username or password');
@@ -172,7 +172,20 @@ router.post('/login', async (req, res) => {
 });
 
 router.get("/stock", isAuthenticated, (req, res, next) => {
-    const userId = req.session.user.id;
+    const userId = req.session.user;
+    /*
+    {
+        id_client: 1,
+        prenom: null,
+        nom: null,
+        mail: null,
+        identifiant: 'a',
+        mdp_client: '$2a$10$dIyKqOKhY1jsRMaSF.lvjeF6ZGVmAka.z6DBzlY80aQRgHk3y5z2W',
+        date_inscription: '2024-04-07T22:00:00.000Z'
+    }
+    */
+
+    console.log(userId.id_client)
     res.send(`${userId}`)
 })
 

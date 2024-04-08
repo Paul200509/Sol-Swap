@@ -1,0 +1,190 @@
+<!-- src/Server/views/table.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Palfrenier</title>
+    <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <div class="Commandes">
+        <div class="information">
+            <h1>Commandes</h1>
+        </div>
+        <form action="/ressources/commandes/valider" method="post">
+            <div class="form-row">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Stock</th>
+                            <th>Prix/U</th>
+                            <th>Action</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% stock.forEach(row => { %>
+                            <% if (row.id == 100) {%>
+                                <tr>
+                                    <td><label for="<%= row.id %>"><%= row.description %></label></td>
+                                    <td colspan="2">
+                                        <select id="select_<%= row.id %>" onchange="input('<%= row.id %>')" size="1">
+                                            <option value="0" selected>Select an item</option>
+                                            <% cheval_caleche.forEach(row => {%>
+                                                <option value="<%= row.price %>">$<%= row.price.toFixed(2)%> <%= row.description %></option>
+                                            <%})%>
+                                        </select>
+                                    </td>
+                                    <td class="btn-input">
+                                        <button type="button" class="sub-btn" onclick="decrement('<%= row.id %>')"><i class="bi bi-caret-down-fill"></i></button>
+                                        <input type="number" id="<%= row.id %>" onblur="input('<%= row.id %>')" name="<%= row.id %>" value="0" min="0" required data-price="<%= row.price %>">
+                                        <button type="button" class="add-btn" onclick="increment('<%= row.id %>')"><i class="bi bi-caret-up-fill"></i></button>
+                                    </td>
+                                    <td><label for="<%= row.id %>">$<span class="subtotal" id="total_<%= row.id %>">0.00</span></label></td>
+                                </tr>
+                            <%} else {%>
+                                <tr>
+                                    <td><label for="<%= row.id %>"><%= row.description %></label></td>
+                                    <td class="Status_<%= (row.stock == 0 ) ? "Insufficient" : (row.stock == 1 ) ? "Critical": "Good" %>"><label for="<%= row.id %>"><%= row.stock %></label></td>
+                                    <td><label for="price_<%= row.id %>">$<span><%= row.price.toFixed(2) %></span></label></td>
+                                    <td class="btn-input">
+                                        <button type="button" class="sub-btn" onclick="decrement('<%= row.id %>')"><i class="bi bi-caret-down-fill"></i></button>
+                                        <input type="number" id="<%= row.id %>" onblur="input('<%= row.id %>')" name="<%= row.id %>" value="0" min="0" required data-price="<%= row.price %>">
+                                        <button type="button" class="add-btn" onclick="increment('<%= row.id %>')"><i class="bi bi-caret-up-fill"></i></button>
+                                    </td>
+                                    <td><label for="<%= row.id %>">$<span class="subtotal" id="total_<%= row.id %>">0.00</span></label></td>
+                                </tr>
+                            <%}%>
+                        <% }); %>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" style="text-align: right;"><strong>Total Price:</strong></td>
+                            <td>$<span id="total_price">0.00</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: right;"><strong>- 10 % :</strong></td>
+                            <td>$<span id="total_price_10_persent">0.00</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: right;"><strong>valeur à rendre pour 10% :</strong></td>
+                            <td>$<span id="rendre_price_10_persent">0.00</span></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <button type="submit">Validée</button>
+            <button type="reset">Reset</button>
+        </form>
+    </div>
+    <div class="Restock">
+        <div class="information">
+            <h1>Restock</h1>
+        </div>
+        <form action="/ressources/commandes/restock" method="post">
+            <div class="form-row">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Stock</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% stock.forEach(row => { %>
+                        <% if (row.id == 100) {%>
+                        <%} else {%>
+                            <tr>
+                                <td><label for="<%= row.id %>"><%= row.description %></label></td>
+                                <td class="Status_<%= (row.stock == 0 ) ? "Insufficient" : (row.stock == 1 ) ? "Critical": "Good" %>"><label for="<%= row.id %>"><%= row.stock %></label></td>
+                                <td class="btn-input restock" >
+                                    <button type="button" class="sub-btn" onclick="Restock_decrement('restock_<%= row.id %>')"><i class="bi bi-caret-down-fill"></i></button>
+                                    <input type="number" id="restock_<%= row.id %>" onblur="Restock_input('restock_<%= row.id %>')" name="<%= row.id %>" value="0" min="0" required data-price="<%= row.price %>">
+                                    <button type="button" class="add-btn" onclick="Restock_increment('restock_<%= row.id %>')"><i class="bi bi-caret-up-fill"></i></button>
+                                </td>
+                            </tr>
+                        <%}%>
+                    <% }); %>
+                    </tbody>
+                </table>
+            </div>
+            <button type="submit">Validée</button>
+            <button type="reset">Reset</button>
+        </form>
+    </div>
+<script>
+    function increment(inputId) {
+        var input = document.getElementById(inputId);
+        input.value = parseInt(input.value) + 1;
+        calculateTotal(inputId);
+    }
+    function input(inputId) {
+        var input = document.getElementById(inputId);
+        var value = parseFloat(input.value);
+        if (value.toString() == "NaN") {
+            input.value = parseInt(0)
+        } else {
+            input.value = parseInt(input.value);
+        }
+        calculateTotal(inputId);
+    }
+    function decrement(inputId) {
+        var input = document.getElementById(inputId);
+        if (parseInt(input.value) > 0) {
+            input.value = parseInt(input.value) - 1;
+            calculateTotal(inputId);
+        }
+    }
+    function calculateTotal(inputId) {
+        var input = document.getElementById(inputId);
+        var quantity = parseInt(input.value);
+        if (inputId == 100) {
+            var select = document.getElementById('select_100');
+            var selectPrice = parseFloat(select.value);
+            var selectTotal = selectPrice * quantity;
+            document.getElementById('total_' + inputId).textContent = selectTotal.toFixed(2);
+        } else {
+            var price = parseFloat(input.dataset.price);
+            var total = price * quantity;
+            document.getElementById('total_' + inputId).textContent = total.toFixed(2);
+        }
+        calculateTotalPrice();
+    }
+    function calculateTotalPrice() {
+        const subtotalElements = document.querySelectorAll('.subtotal');
+        let totalPrice = 0;
+        // Iterate over each subtotal element
+        subtotalElements.forEach(element => {
+            const subtotalText = element.textContent.trim();
+            const subtotal = parseFloat(subtotalText);
+            // Add the subtotal to the total
+            totalPrice += subtotal;
+        });
+        const ten_persent = totalPrice * 0.90;
+        const ten_rendre = totalPrice * 0.10;
+        // Update the total price in the total_price element
+        document.getElementById('total_price').innerText = totalPrice.toFixed(2);
+        document.getElementById('total_price_10_persent').innerText = ten_persent.toFixed(2);
+        document.getElementById('rendre_price_10_persent').innerText = ten_rendre.toFixed(2);
+    }
+
+    function Restock_decrement(inputId) {
+        var input = document.getElementById(inputId);
+        if (parseInt(input.value) > 0) {
+            input.value = parseInt(input.value) - 1;
+        }
+    }
+    function Restock_input(inputId) {
+
+    }
+    function Restock_increment(inputId) {
+        var input = document.getElementById(inputId);
+        input.value = parseInt(input.value) + 1;
+    }
+
+</script>
+</body>
+</html>

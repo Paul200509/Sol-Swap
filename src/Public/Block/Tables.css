@@ -1,0 +1,67 @@
+table {
+    border-collapse: collapse;
+}
+tr td, tr th {
+    border-bottom: 1px solid #EEEEEE; /* Trait entre chaque ligne */
+    box-sizing: border-box;
+    padding: 2px 2px 2px 2px;
+}
+
+.Commandes {
+    margin-right: 2rem;
+    tbody tr th:nth-last-child(1),
+    tbody tr td:nth-last-child(1) {
+        min-width: 75px;
+        width: 75px;
+    }
+    tbody tr th:nth-last-child(2),
+    tbody tr td:nth-last-child(2) {
+        min-width: 120px;
+        width: 120px;
+    }
+    tbody tr th:nth-last-child(3),
+    tbody tr td:nth-last-child(3) {
+        min-width: 70px;
+        width: 70px;
+    }
+    tbody th:nth-child(2),
+    tbody td:nth-child(2) {
+        min-width: 50px;
+        width: 50px;
+        text-align: center;
+    }
+}
+
+.Restock {
+    tbody tr th:nth-child(1),
+    tbody tr td:nth-child(1),
+    tbody tr th:nth-child(3),
+    tbody tr td:nth-child(3) {
+        min-width: 120px;
+        width: 120px;
+    }
+    tbody tr th:nth-child(2),
+    tbody tr td:nth-child(2) {
+        min-width: 50px;
+        width: 50px;
+    }
+
+}
+tr td:first-child{
+    font-size: 11px;
+}
+tr:first-child td {
+    border-top: 1px solid #dddddd;
+}
+tr:last-child td {
+    border-bottom: none; /* Supprimer la bordure de la dernière ligne si nécessaire */
+}
+th:nth-child(1),
+td:nth-child(1) {
+    width: 125px; /* Largeur de la première colonne */
+}
+
+.restock {
+    width: 75px;
+}
+

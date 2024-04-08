@@ -1,0 +1,10 @@
+# MODULE DISCORD
+node_modules/
+
+.npm
+src/.env
+src/Certificate/certificate.crt
+src/Certificate/private_key.pem
+# IDEA
+.vscode
+.idea

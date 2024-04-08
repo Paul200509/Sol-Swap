@@ -131,7 +131,7 @@ router.post('/register', async (req, res) => {
 
     try {
         const newUser = await pool.query(
-            'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *',
+            'INSERT INTO client (identifiant, mdp_client) VALUES ($1, $2) RETURNING *',
             [username, hashedPassword]
         );
         res.status(201).send('User registered successfully');
@@ -146,10 +146,10 @@ router.get('/login', (req, res) => {
 });
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
-
+    
     try {
         const user = await pool.query(
-            'SELECT * FROM users WHERE username = $1',
+            'SELECT * FROM client WHERE identifiant = $1',
             [username]
         );
 
@@ -157,8 +157,8 @@ router.post('/login', async (req, res) => {
             return res.status(401).send('Invalid username or password');
         }
 
-        const isValidPassword = await bcrypt.compare(password, user.rows[0].password);
-
+        const isValidPassword = await bcrypt.compare(password, user.rows[0].mdp_client);
+        
         if (!isValidPassword) {
             return res.status(401).send('Invalid username or password');
         }
